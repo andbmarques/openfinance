@@ -12,15 +12,25 @@ import { Circle, Pencil, Plus, Trash } from "phosphor-react";
 import { dataContext } from "../context/data.context.jsx";
 import NewTransactionDrawer from "../overlays/newtransaction.jsx";
 import { appContext } from "../context/app.context.jsx";
+import EditTransactionDrawer from "../overlays/editTransaction.jsx";
 
 export default function Transactions() {
   const { data, setData } = useContext(dataContext);
   const { currentDate, setCurrentDate } = useContext(appContext);
+
   const [newTransactionOpen, setNewTransactionOpen] = useState(false);
+  const [editTransactionOpen, setEditTransactionOpen] = useState(false)
+  const [currentTransaction, setCurrentTransaction] = useState()
 
   function handleOpenNewTransaction(e) {
     e.preventDefault();
     setNewTransactionOpen(true);
+  }
+
+  function handleOpenEditTransaction(e, id) {
+    e.preventDefault()
+    setCurrentTransaction(id)
+    setEditTransactionOpen(true)
   }
 
   function handleDelete(id) {
@@ -147,7 +157,7 @@ export default function Transactions() {
                       <Table.Cell><Circle weight="fill" color={data.categories.find(el => el.id == item.category).color} /> </Table.Cell>
                       <Table.Cell dir="row">{data.categories.find(el => el.id == item.category).name}</Table.Cell>
                       <Table.Cell>
-                        <IconButton variant="ghost" size="xs">
+                        <IconButton variant="ghost" size="xs" onClick={(e) => handleOpenEditTransaction(e, item.id)}>
                           <Pencil />
                         </IconButton>
                         <IconButton
@@ -167,6 +177,11 @@ export default function Transactions() {
       <NewTransactionDrawer
         open={newTransactionOpen}
         setOpen={setNewTransactionOpen}
+      />
+      <EditTransactionDrawer 
+        open={editTransactionOpen}
+        setOpen={setEditTransactionOpen}
+        id={currentTransaction}
       />
     </VStack>
   );
