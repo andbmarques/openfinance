@@ -182,16 +182,18 @@ export default function NavDash() {
           Transações
         </Button>
         <Button
-          onClick={() => setPage("transactions")}
+          onClick={() => setPage("invoice")}
           size="xs"
           variant="ghost"
+          color={page === "invoice" ? "blue.500" : ""}
         >
           Fatura
         </Button>
         <Button
-          onClick={() => setPage("transactions")}
+          onClick={() => setPage("categories")}
           size="xs"
           variant="ghost"
+          color={page === "categories" ? "blue.500" : ""}
         >
           Categorias
         </Button>
