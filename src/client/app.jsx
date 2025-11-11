@@ -6,7 +6,9 @@ import NavDash from "./components/navdash.jsx";
 import { appContext } from "./context/app.context.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import Transactions from "./pages/transactions.jsx";
+import Categories from "./pages/categories.jsx";
 import "./index.css";
+import { Toaster } from "../components/ui/toaster.jsx";
 
 export default function App() {
   const { page, setPage } = useContext(appContext);
@@ -17,6 +19,8 @@ export default function App() {
       <NavDash />
       {page === "dashboard" ? <Dashboard /> : <></>}
       {page === "transactions" ? <Transactions /> : <></>}
+      {page === "categories" ? <Categories /> : <></>}
+      <Toaster />
     </VStack>
   );
 }

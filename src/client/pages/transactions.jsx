@@ -8,7 +8,7 @@ import {
   Table,
   VStack,
 } from "@chakra-ui/react";
-import { Pencil, Plus, Trash } from "phosphor-react";
+import { Circle, Pencil, Plus, Trash } from "phosphor-react";
 import { dataContext } from "../context/data.context.jsx";
 import NewTransactionDrawer from "../overlays/newtransaction.jsx";
 import { appContext } from "../context/app.context.jsx";
@@ -92,9 +92,10 @@ export default function Transactions() {
                 </Checkbox.Root>
               </Table.ColumnHeader>
               <Table.ColumnHeader>Data</Table.ColumnHeader>
-              <Table.ColumnHeader w="50%">Desc</Table.ColumnHeader>
+              <Table.ColumnHeader w="35%">Desc</Table.ColumnHeader>
               <Table.ColumnHeader>Tipo</Table.ColumnHeader>
               <Table.ColumnHeader>Valor</Table.ColumnHeader>
+              <Table.ColumnHeader></Table.ColumnHeader>
               <Table.ColumnHeader>Categoria</Table.ColumnHeader>
               <Table.ColumnHeader>Ações</Table.ColumnHeader>
             </Table.Row>
@@ -143,7 +144,8 @@ export default function Transactions() {
                         {item.type === "expense" ? "-" : ""}
                         R${item.value}
                       </Table.Cell>
-                      <Table.Cell>{item.category.toUpperCase()}</Table.Cell>
+                      <Table.Cell><Circle weight="fill" color={data.categories.find(el => el.id == item.category).color} /> </Table.Cell>
+                      <Table.Cell dir="row">{data.categories.find(el => el.id == item.category).name}</Table.Cell>
                       <Table.Cell>
                         <IconButton variant="ghost" size="xs">
                           <Pencil />

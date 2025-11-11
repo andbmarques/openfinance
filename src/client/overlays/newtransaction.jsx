@@ -111,8 +111,11 @@ export default function NewTransactionDrawer({ open, setOpen }) {
                       value={category}
                     >
                       <NativeSelect.Field placeholder="Categoria">
-                        <option value="mercado">Mercado</option>
-                        <option value="casa">Casa</option>
+                        {
+                          data && data.categories.filter(el => el.type == type).map((itemCategory, index) => {
+                            return <option key={index} value={itemCategory.id}>{itemCategory.name}</option>
+                          })
+                        }
                       </NativeSelect.Field>
                       <NativeSelect.Indicator />
                     </NativeSelect.Root>

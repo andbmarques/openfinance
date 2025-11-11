@@ -6,6 +6,20 @@ export const DataContextProvider = ({ children }) => {
   const [page, setPage] = useState("dashboard");
   const [data, setData] = useState({
     transactions: [],
+    categories: [
+      {
+        id: Date.now(),
+        name: "Mercado",
+        type: "expense",
+        color: "#2563eb"
+      },
+      {
+        id: Date.now() + 1,
+        name: "Salario",
+        type: "income",
+        color: "#dc2626"
+      }
+    ]
   });
 
   useEffect(() => {
