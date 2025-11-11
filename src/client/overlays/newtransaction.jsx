@@ -14,6 +14,7 @@ import { Plus } from "phosphor-react";
 import React, { useContext, useState } from "react";
 import { dataContext } from "../context/data.context.jsx";
 import { appContext } from "../context/app.context.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export default function NewTransactionDrawer({ open, setOpen }) {
   const { data, setData } = useContext(dataContext);
@@ -41,6 +42,17 @@ export default function NewTransactionDrawer({ open, setOpen }) {
       setCategory("");
       setOpen(false);
       setCurrentDate(`${date.split("-")[1]}/${date.split("-")[0]}`)
+      toaster.create({
+        description: "Transação criada com sucesso!",
+        type: "success",
+        closable: true
+      })
+    } else {
+      toaster.create({
+        description: "Todos os campos devem ser preenchidos!",
+        type: "error",
+        closable: true
+      })
     }
   }
 
