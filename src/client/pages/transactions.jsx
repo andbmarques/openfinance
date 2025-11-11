@@ -5,6 +5,7 @@ import {
   Checkbox,
   HStack,
   IconButton,
+  Separator,
   Table,
   VStack,
 } from "@chakra-ui/react";
@@ -22,6 +23,11 @@ export default function Transactions() {
   const [editTransactionOpen, setEditTransactionOpen] = useState(false)
   const [currentTransaction, setCurrentTransaction] = useState()
 
+  const [selection, setSelection] = useState([])
+
+  const hasSelection = selection.length > 0
+  const indeterminate = hasSelection && selection.length < data.transactions.length
+
   function handleOpenNewTransaction(e) {
     e.preventDefault();
     setNewTransactionOpen(true);
@@ -33,52 +39,102 @@ export default function Transactions() {
     setEditTransactionOpen(true)
   }
 
-  function handleDelete(id) {
-  const newTransactions = data.transactions.filter(transaction => transaction.id !== id);
+  function handleBulkDelete() {
+    const newTransactions = data.transactions.filter(
+      transaction => !selection.includes(transaction.id)
+    );
 
-  const currentDateObj = new Date(currentDate);
-  const currentMonth = currentDateObj.getMonth();
-  const currentYear = currentDateObj.getFullYear();
+    const currentDateObj = new Date(currentDate);
+    const currentMonth = currentDateObj.getMonth();
+    const currentYear = currentDateObj.getFullYear();
 
-  const hasTransactionsInCurrentMonth = newTransactions.some(t => {
-    const transactionDate = new Date(t.date);
-    return transactionDate.getMonth() === currentMonth &&
-      transactionDate.getFullYear() === currentYear;
-  });
+    const hasTransactionsInCurrentMonth = newTransactions.some(t => {
+      const transactionDate = new Date(t.date);
+      return transactionDate.getMonth() === currentMonth &&
+        transactionDate.getFullYear() === currentYear;
+    });
 
-  let newCurrentDate = currentDate;
+    let newCurrentDate = currentDate;
 
-  if (!hasTransactionsInCurrentMonth) {
-    if (newTransactions.length > 0) {
-      const mostRecentDate = newTransactions.reduce((mostRecent, transaction) => {
-        const currentDate = new Date(transaction.date);
-        const mostRecentDateObj = new Date(mostRecent);
-        return currentDate > mostRecentDateObj ? transaction.date : mostRecent;
-      }, newTransactions[0].date);
+    if (!hasTransactionsInCurrentMonth) {
+      if (newTransactions.length > 0) {
+        const mostRecentDate = newTransactions.reduce((mostRecent, transaction) => {
+          const currentDate = new Date(transaction.date);
+          const mostRecentDateObj = new Date(mostRecent);
+          return currentDate > mostRecentDateObj ? transaction.date : mostRecent;
+        }, newTransactions[0].date);
 
-      newCurrentDate = mostRecentDate;
+        newCurrentDate = mostRecentDate;
+      } else {
+        newCurrentDate = null;
+      }
+    }
+
+    setData({
+      ...data,
+      transactions: newTransactions,
+    });
+
+    if (newCurrentDate) {
+      const dateObj = new Date(newCurrentDate);
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const year = dateObj.getFullYear();
+      const formattedDate = `${month}/${year}`;
+      setCurrentDate(formattedDate);
     } else {
-      newCurrentDate = null;
+      setCurrentDate(null);
+    }
+
+    setSelection([]);
+  }
+
+  function handleDelete(id) {
+    console.log(id)
+    const newTransactions = data.transactions.filter(transaction => transaction.id !== id);
+
+    const currentDateObj = new Date(currentDate);
+    const currentMonth = currentDateObj.getMonth();
+    const currentYear = currentDateObj.getFullYear();
+
+    const hasTransactionsInCurrentMonth = newTransactions.some(t => {
+      const transactionDate = new Date(t.date);
+      return transactionDate.getMonth() === currentMonth &&
+        transactionDate.getFullYear() === currentYear;
+    });
+
+    let newCurrentDate = currentDate;
+
+    if (!hasTransactionsInCurrentMonth) {
+      if (newTransactions.length > 0) {
+        const mostRecentDate = newTransactions.reduce((mostRecent, transaction) => {
+          const currentDate = new Date(transaction.date);
+          const mostRecentDateObj = new Date(mostRecent);
+          return currentDate > mostRecentDateObj ? transaction.date : mostRecent;
+        }, newTransactions[0].date);
+
+        newCurrentDate = mostRecentDate;
+      } else {
+        newCurrentDate = null;
+      }
+    }
+
+    setData({
+      ...data,
+      transactions: newTransactions,
+    });
+
+    if (newCurrentDate) {
+      const dateObj = new Date(newCurrentDate);
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const year = dateObj.getFullYear();
+      const formattedDate = `${month}/${year}`;
+      setCurrentDate(formattedDate);
+    } else {
+      setCurrentDate(null);
     }
   }
 
-  setData({
-    ...data,
-    transactions: newTransactions,
-  });
-
-  if (newCurrentDate) {
-    const dateObj = new Date(newCurrentDate);
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-    const year = dateObj.getFullYear();
-    const formattedDate = `${month}/${year}`;
-    setCurrentDate(formattedDate);
-  } else {
-    setCurrentDate(null);
-  }
-}
-
-  useEffect(() => {}, [data]);
+  useEffect(() => { }, [data]);
 
   return (
     <VStack w="100%" gap="4">
@@ -86,8 +142,9 @@ export default function Transactions() {
         <Button variant="outline" size="xs" onClick={handleOpenNewTransaction}>
           <Plus /> Nova
         </Button>
-        <Button variant="outline" size="xs">
-          <Trash /> Deletar
+        <Separator orientation="vertical" h="8" />
+        <Button disabled={!hasSelection} onClick={handleBulkDelete} variant="outline" size="xs">
+          <Trash /> Deletar {`(${selection.length})`}
         </Button>
       </HStack>
       <VStack w="100%" px="2">
@@ -96,7 +153,14 @@ export default function Transactions() {
           <Table.Header>
             <Table.Row>
               <Table.ColumnHeader>
-                <Checkbox.Root size="md">
+                <Checkbox.Root size="md" checked={indeterminate ? "indeterminate" : selection.length > 0} onCheckedChange={(changes) => {
+                  const visibleTransactions = data.transactions.filter((item) => {
+                    const [year, month] = item.date.split("-");
+                    return `${month}/${year}` === currentDate;
+                  });
+
+                  setSelection(changes.checked ? visibleTransactions.map((item) => item.id) : [])
+                }}>
                   <Checkbox.HiddenInput />
                   <Checkbox.Control />
                 </Checkbox.Root>
@@ -132,9 +196,11 @@ export default function Transactions() {
                 })
                 .map((item, index) => {
                   return (
-                    <Table.Row key={index}>
+                    <Table.Row key={index} data-selected={selection.includes(item.id) ? "" : undefined}>
                       <Table.Cell>
-                        <Checkbox.Root size="md">
+                        <Checkbox.Root size="md" checked={selection.includes(item.id)} onCheckedChange={(changes) => {
+                          setSelection((prev) => changes.checked ? [...prev, item.id] : selection.filter((id) => id !== item.id))
+                        }}>
                           <Checkbox.HiddenInput />
                           <Checkbox.Control />
                         </Checkbox.Root>
@@ -178,7 +244,7 @@ export default function Transactions() {
         open={newTransactionOpen}
         setOpen={setNewTransactionOpen}
       />
-      <EditTransactionDrawer 
+      <EditTransactionDrawer
         open={editTransactionOpen}
         setOpen={setEditTransactionOpen}
         id={currentTransaction}
