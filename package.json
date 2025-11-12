@@ -1,7 +1,7 @@
 {
   "name": "openfinance",
   "productName": "OpenFinance",
-  "version": "0.0.1",
+  "version": "0.1.5",
   "description": "Desktop app designed for personal expense tracking.",
   "main": ".webpack/main",
   "scripts": {
@@ -16,6 +16,10 @@
     "name": "Anderson B. Marques",
     "email": "andbmarques@gmail.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andbmarques/openfinance.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.28.5",
@@ -29,6 +33,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.10.2",
     "@electron-forge/plugin-fuses": "^7.10.2",
     "@electron-forge/plugin-webpack": "^7.10.2",
+    "@electron-forge/publisher-github": "^7.10.2",
     "@electron/fuses": "^1.8.0",
     "@vercel/webpack-asset-relocator-loader": "^1.7.3",
     "babel-loader": "^10.0.0",
@@ -45,6 +50,7 @@
     "phosphor-react": "^1.4.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "update-electron-app": "^3.1.1"
   }
 }
