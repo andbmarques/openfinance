@@ -16,6 +16,18 @@ module.exports = {
       },
     },
   ],
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'Anderson B. Marques',
+          name: 'openfinance'
+        },
+        prerelease: true
+      }
+    }
+  ],
   plugins: [
     {
       name: "@electron-forge/plugin-auto-unpack-natives",

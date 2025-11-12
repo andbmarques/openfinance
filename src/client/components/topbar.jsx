@@ -36,7 +36,7 @@ export default function Topbar() {
           <IconButton onClick={printData} variant="ghost" size="2xs">
             <Bug weight="fill" />
           </IconButton>
-          <Text color="gray.500" fontSize="xs">v0.1A</Text>
+          <Text color="gray.500" fontSize="xs">v0.1.5A</Text>
         </HStack>
       </HStack>
     </>
